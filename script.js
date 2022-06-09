@@ -14,6 +14,8 @@ const currentScore2El = document.getElementById('current--2');
 const currentScoreEl = document.querySelector('.current-score');
 
 const diceEl = document.querySelector('.dice');
+const dice0El = document.querySelector('.dice--0');
+const dice1El = document.querySelector('.dice--1');
 
 const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
@@ -33,7 +35,8 @@ const init = function () {
   currentScore0El.textContent = 0;
   currentScore1El.textContent = 0;
   currentScore2El.textContent = 0;
-  diceEl.classList.add('hidden');
+  dice0El.classList.add('hidden');
+  dice1El.classList.add('hidden');
 
   player0El.classList.remove('player--winner');
   player1El.classList.remove('player--winner');
@@ -73,15 +76,19 @@ const switchPlayer = function () {
 btnRoll.addEventListener('click', function () {
   if (playing) {
     // 1.generate random dice number between 1...6
-    let diceNumber = Math.trunc(Math.random() * 6 + 1);
-    console.log(diceNumber);
+    let diceNumber0 = Math.trunc(Math.random() * 6 + 1);
+    let diceNumber1 = Math.trunc(Math.random() * 6 + 1);
+    let diceSum = diceNumber0 + diceNumber1;
+    console.log(diceNumber0, diceNumber1);
 
     // 2. display dice picture
-    diceEl.classList.remove('hidden');
-    diceEl.src = `dice-${diceNumber}.png`;
+    dice0El.classList.remove('hidden');
+    dice0El.src = `dice-${diceNumber0}.png`;
+    dice1El.classList.remove('hidden');
+    dice1El.src = `dice-${diceNumber1}.png`;
     // 3. check if dice === 1. if true => switch to next player if false add diceNumber to current score
-    if (diceNumber !== 1) {
-      currentScore += diceNumber;
+    if (diceNumber0 !== 1 && diceNumber1 !== 1) {
+      currentScore += diceSum;
       document.getElementById(`current--${activePlayer}`).textContent =
         currentScore;
       // currentScore0El.textContent = currentScore; //CHANGE LATER
@@ -101,10 +108,11 @@ btnHold.addEventListener('click', function () {
     // 2. check if score >= 100
     // 3. if true - active player wins - finish game
     // 4. if false - switch to the next player
-    if (scores[activePlayer] >= 100) {
+    if (scores[activePlayer] >= 120) {
       // finish game
       playing = false;
-      diceEl.classList.add('hidden');
+      dice0El.classList.add('hidden');
+      dice1El.classList.add('hidden');
       // replacing Player #... for "WINNER!" to the winner
       document.getElementById(`name--${activePlayer}`).textContent = `ПОБЕДА!`;
       // document.getElementById(`score--${activePlayer}`).textContent =
