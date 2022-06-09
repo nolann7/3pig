@@ -72,34 +72,7 @@ const switchPlayer = function () {
     .querySelector(`.player--${activePlayer}`)
     .classList.add('player--active'); // for 3+ players
 };
-
-btnRoll.addEventListener('click', function () {
-  if (playing) {
-    // 1.generate random dice number between 1...6
-    let diceNumber0 = Math.trunc(Math.random() * 6 + 1);
-    let diceNumber1 = Math.trunc(Math.random() * 6 + 1);
-    let diceSum = diceNumber0 + diceNumber1;
-    console.log(diceNumber0, diceNumber1);
-
-    // 2. display dice picture
-    dice0El.classList.remove('hidden');
-    dice0El.src = `dice-${diceNumber0}.png`;
-    dice1El.classList.remove('hidden');
-    dice1El.src = `dice-${diceNumber1}.png`;
-    // 3. check if dice === 1. if true => switch to next player if false add diceNumber to current score
-    if (diceNumber0 !== 1 && diceNumber1 !== 1) {
-      currentScore += diceSum;
-      document.getElementById(`current--${activePlayer}`).textContent =
-        currentScore;
-      // currentScore0El.textContent = currentScore; //CHANGE LATER
-    } else {
-      //switch to next player
-      switchPlayer();
-    }
-  }
-});
-
-btnHold.addEventListener('click', function () {
+const hold = function () {
   if (playing) {
     // 1. add current score to score of active player
     scores[activePlayer] += currentScore;
@@ -108,7 +81,7 @@ btnHold.addEventListener('click', function () {
     // 2. check if score >= 100
     // 3. if true - active player wins - finish game
     // 4. if false - switch to the next player
-    if (scores[activePlayer] >= 120) {
+    if (scores[activePlayer] >= 200) {
       // finish game
       playing = false;
       dice0El.classList.add('hidden');
@@ -129,10 +102,53 @@ btnHold.addEventListener('click', function () {
       switchPlayer();
     }
   }
-});
+};
 
+const roll = function () {
+  if (playing) {
+    // 1.generate random dice number between 1...6
+    let diceNumber0 = Math.trunc(Math.random() * 6 + 1);
+    let diceNumber1 = Math.trunc(Math.random() * 6 + 1);
+    let diceSum = diceNumber0 + diceNumber1;
+    console.log(diceNumber0, diceNumber1);
+
+    // 2. display dice picture
+    dice0El.classList.remove('hidden');
+    dice0El.src = `dice-${diceNumber0}.png`;
+    dice1El.classList.remove('hidden');
+    dice1El.src = `dice-${diceNumber1}.png`;
+    // 3. check if dice === 1. if true => switch to next player if false add diceNumber to current score
+    // if (diceNumber0 !== 1 && diceNumber1 !== 1) {  // если есть хоть одна 1 - смена. шанс - 1/3
+    //если дубль - смена. шанс 1/6
+    if (diceNumber0 !== diceNumber1) {
+      currentScore += diceSum;
+      document.getElementById(`current--${activePlayer}`).textContent =
+        currentScore;
+      // currentScore0El.textContent = currentScore; //CHANGE LATER
+    } else {
+      //switch to next player
+      switchPlayer();
+    }
+  }
+};
+
+btnRoll.addEventListener('click', roll);
+document.addEventListener('keydown', function (e) {
+  if (e.key === ' ') {
+    roll();
+  }
+});
+// for hold
+btnHold.addEventListener('click', hold);
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Enter') {
+    hold();
+  }
+});
 // reset the game
-btnNew.addEventListener('click', function () {
-  init();
-  // console.log('btnNew work');
+btnNew.addEventListener('click', init);
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    init();
+  }
 });
